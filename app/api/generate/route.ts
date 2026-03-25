@@ -40,13 +40,12 @@ function extractVideoUrl(value: unknown): string | null {
 
 function isValidReferenceImages(value: unknown): value is ReferenceImage[] {
   if (!Array.isArray(value)) return false;
-  return value.every(
-    (item) =>
-      item &&
-      typeof item === "object" &&
-      typeof (item as Record<string, unknown>).url === "string" &&
-      (item as Record<string, unknown>).url.toString().trim().length > 0,
-  );
+  return value.every((item) => {
+    if (!item || typeof item !== "object") return false;
+
+    const url = (item as { url?: unknown }).url;
+    return typeof url === "string" && url.trim().length > 0;
+  });
 }
 
 function normalizeResponseText(data: unknown): string {
