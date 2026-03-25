@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GrokVI - AI 影片生成站
 
-## Getting Started
+使用 Next.js 建立的影片生成網站，後端透過 BlazeAI API 呼叫 `openai/grok-imagine-1.0-video` 模型。
 
-First, run the development server:
+## 1) 本機開發
+
+先安裝依賴：
+
+```bash
+npm install
+```
+
+建立環境變數檔：
+
+```bash
+cp .env.example .env.local
+```
+
+將 `.env.local` 內的 `BLAZE_API_KEY` 換成你的 Key。
+
+啟動開發伺服器：
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2) 環境變數
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `BLAZE_API_KEY`：BlazeAI 金鑰（必填）
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 3) API 端點
 
-## Learn More
+- `POST /api/generate`
+- Request body:
 
-To learn more about Next.js, take a look at the following resources:
+```json
+{
+  "prompt": "黃昏海邊，電影感鏡頭，4K"
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Response:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```json
+{
+  "raw": "...模型原始輸出...",
+  "videoUrl": "https://..."
+}
+```
 
-## Deploy on Vercel
+## 4) 部署到 Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. 將專案推到 GitHub。
+2. 在 Vercel 匯入該 repo。
+3. 在 Vercel 專案設定新增環境變數：`BLAZE_API_KEY`。
+4. Deploy。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+本專案包含 `vercel.json`，已將 `app/api/generate/route.ts` 的 `maxDuration` 設為 60 秒。
